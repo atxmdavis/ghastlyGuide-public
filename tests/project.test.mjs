@@ -37,16 +37,16 @@ test("DreamHost package contains the public and protected application halves", a
 });
 
 test("contact form is routed, validated, and abuse-limited", async () => {
-  const main = await readFile(new URL("dreamhost/frontend/main.tsx", root), "utf8");
-  const form = await readFile(new URL("app/contact-page.tsx", root), "utf8");
-  const endpoint = await readFile(new URL("dreamhost/backend/public/api/contact.php", root), "utf8");
-  const apache = await readFile(new URL("dreamhost/backend/public/.htaccess", root), "utf8");
+  const main = await readFile(new URL("frontend/main.tsx", root), "utf8");
+  const form = await readFile(new URL("frontend/src/contact-page.tsx", root), "utf8");
+  const endpoint = await readFile(new URL("backend/public/api/contact.php", root), "utf8");
+  const apache = await readFile(new URL("backend/public/.htaccess", root), "utf8");
   assert.match(main, /path === "\/contact"/);
   assert.doesNotMatch(form, /info@ghastlyguide\.com/);
   assert.match(form, /contact-honeypot/);
   assert.match(endpoint, /REQUEST_METHOD/);
   assert.match(endpoint, /HTTP_ORIGIN/);
-  const validation = await readFile(new URL("dreamhost/backend/src/contact.php", root), "utf8");
+  const validation = await readFile(new URL("backend/src/contact.php", root), "utf8");
   assert.match(validation, /FILTER_VALIDATE_EMAIL/);
   assert.match(endpoint, /ghastly_contact_rate_limit/);
   assert.match(endpoint, /info@ghastlyguide\.com/);
@@ -54,14 +54,14 @@ test("contact form is routed, validated, and abuse-limited", async () => {
 });
 
 test("saved titles can be copied to another device with a one-time link", async () => {
-  const home = await readFile(new URL("app/page.tsx", root), "utf8");
-  const modal = await readFile(new URL("app/saved-transfer-modal.tsx", root), "utf8");
-  const transfer = await readFile(new URL("app/saved-transfer.ts", root), "utf8");
-  const endpoint = await readFile(new URL("dreamhost/backend/public/api/saved-transfer.php", root), "utf8");
-  const apache = await readFile(new URL("dreamhost/backend/public/.htaccess", root), "utf8");
+  const home = await readFile(new URL("frontend/src/page.tsx", root), "utf8");
+  const modal = await readFile(new URL("frontend/src/saved-transfer-modal.tsx", root), "utf8");
+  const transfer = await readFile(new URL("frontend/src/saved-transfer.ts", root), "utf8");
+  const endpoint = await readFile(new URL("backend/public/api/saved-transfer.php", root), "utf8");
+  const apache = await readFile(new URL("backend/public/.htaccess", root), "utf8");
   const vite = await readFile(new URL("vite.config.ts", root), "utf8");
   const pkg = await readFile(new URL("package.json", root), "utf8");
-  const css = await readFile(new URL("app/globals.css", root), "utf8");
+  const css = await readFile(new URL("frontend/src/globals.css", root), "utf8");
   assert.match(home, /no account, login, or profile/);
   assert.match(home, /Lists are not synced/);
   assert.match(home, /Copy to another device/);
@@ -80,7 +80,7 @@ test("saved titles can be copied to another device with a one-time link", async 
 });
 
 test("schema supports every launch media type", async () => {
-  const schema = await readFile(new URL("dreamhost/backend/schema.sql", root), "utf8");
+  const schema = await readFile(new URL("backend/schema.sql", root), "utf8");
   for (const media of ["movie", "show", "video_game", "tabletop_game", "comic", "book"]) {
     assert.match(schema, new RegExp(`'${media}'`));
   }
@@ -93,13 +93,13 @@ test("schema supports every launch media type", async () => {
 });
 
 test("production shell has the correct brand and discovery metadata", async () => {
-  const html = await readFile(new URL("dreamhost/frontend/index.html", root), "utf8");
-  const apache = await readFile(new URL("dreamhost/backend/public/.htaccess", root), "utf8");
-  const css = await readFile(new URL("app/globals.css", root), "utf8");
-  const divider = await readFile(new URL("app/ornate-divider.tsx", root), "utf8");
-  const header = await readFile(new URL("app/site-header.tsx", root), "utf8");
-  const home = await readFile(new URL("app/page.tsx", root), "utf8");
-  const releaseCard = await readFile(new URL("app/release-card.tsx", root), "utf8");
+  const html = await readFile(new URL("frontend/index.html", root), "utf8");
+  const apache = await readFile(new URL("backend/public/.htaccess", root), "utf8");
+  const css = await readFile(new URL("frontend/src/globals.css", root), "utf8");
+  const divider = await readFile(new URL("frontend/src/ornate-divider.tsx", root), "utf8");
+  const header = await readFile(new URL("frontend/src/site-header.tsx", root), "utf8");
+  const home = await readFile(new URL("frontend/src/page.tsx", root), "utf8");
+  const releaseCard = await readFile(new URL("frontend/src/release-card.tsx", root), "utf8");
   const vite = await readFile(new URL("vite.config.ts", root), "utf8");
   assert.match(html, /Ghastly Guide/);
   assert.match(html, /https:\/\/ghastlyguide\.com\//);
@@ -156,7 +156,7 @@ test("production shell has the correct brand and discovery metadata", async () =
   assert.match(home, /<main id="main-content" tabIndex=\{-1\}>/);
   assert.doesNotMatch(home, /<section className="hero" id="main-content"/);
   for (const page of ["about-page.tsx", "sources-page.tsx", "contact-page.tsx"]) {
-    const content = await readFile(new URL(`app/${page}`, root), "utf8");
+    const content = await readFile(new URL(`frontend/src/${page}`, root), "utf8");
     assert.match(content, /<main id="main-content" tabIndex=\{-1\}>/);
     assert.doesNotMatch(content, /page-hero" id="main-content"/);
   }
@@ -196,7 +196,7 @@ test("production shell has the correct brand and discovery metadata", async () =
   assert.match(css, /@media \(max-width: 700px\)[\s\S]*?\.calendar-toolbar \{[^}]*position: static/);
   assert.match(home, /Quick date filter/);
   assert.match(home, /date-range__preset/);
-  const dates = await readFile(new URL("app/date.ts", root), "utf8");
+  const dates = await readFile(new URL("frontend/src/date.ts", root), "utf8");
   for (const label of ["Today", "This week", "This month", "3 Months", "6 months", "This year"]) {
     assert.match(dates, new RegExp(`label: "${label}"`));
   }
@@ -253,14 +253,14 @@ test("production shell has the correct brand and discovery metadata", async () =
 });
 
 test("public routes are discoverable without relying on client-side rendering", async () => {
-  const shell = await readFile(new URL("dreamhost/backend/public/index.php", root), "utf8");
-  const seo = await readFile(new URL("dreamhost/backend/src/seo.php", root), "utf8");
-  const sitemap = await readFile(new URL("dreamhost/backend/public/sitemap.php", root), "utf8");
-  const feed = await readFile(new URL("dreamhost/backend/public/feed.php", root), "utf8");
-  const releaseApi = await readFile(new URL("dreamhost/backend/public/api/releases.php", root), "utf8");
+  const shell = await readFile(new URL("backend/public/index.php", root), "utf8");
+  const seo = await readFile(new URL("backend/src/seo.php", root), "utf8");
+  const sitemap = await readFile(new URL("backend/public/sitemap.php", root), "utf8");
+  const feed = await readFile(new URL("backend/public/feed.php", root), "utf8");
+  const releaseApi = await readFile(new URL("backend/public/api/releases.php", root), "utf8");
   const robots = await readFile(new URL("public/robots.txt", root), "utf8");
   const llms = await readFile(new URL("public/llms.txt", root), "utf8");
-  const card = await readFile(new URL("app/release-card.tsx", root), "utf8");
+  const card = await readFile(new URL("frontend/src/release-card.tsx", root), "utf8");
   assert.match(shell, /ghastly_seo_render_listing/);
   assert.match(shell, /ghastly_seo_render_release/);
   assert.match(shell, /noindex,follow/);
@@ -285,15 +285,15 @@ test("public routes are discoverable without relying on client-side rendering", 
 
 test("credentials and generated output remain untracked", async () => {
   const ignore = await readFile(new URL(".gitignore", root), "utf8");
-  assert.match(ignore, /dreamhost\/backend\/config\.php/);
+  assert.match(ignore, /backend\/config\.php/);
   assert.match(ignore, /dreamhost-dist\//);
   assert.match(ignore, /\.env/);
 });
 
 test("analytics is production-only and requires visitor consent", async () => {
-  const analytics = await readFile(new URL("app/analytics.ts", root), "utf8");
-  const consent = await readFile(new URL("app/analytics-consent.tsx", root), "utf8");
-  const publicShell = await readFile(new URL("dreamhost/backend/public/index.php", root), "utf8");
+  const analytics = await readFile(new URL("frontend/src/analytics.ts", root), "utf8");
+  const consent = await readFile(new URL("frontend/src/analytics-consent.tsx", root), "utf8");
+  const publicShell = await readFile(new URL("backend/public/index.php", root), "utf8");
   const workflow = await readFile(new URL("docs/workflow-examples/deploy-dreamhost.yml", root), "utf8");
   const vite = await readFile(new URL("vite.config.ts", root), "utf8");
   assert.match(analytics, /import\.meta\.env\.PROD/);
@@ -312,7 +312,7 @@ test("analytics is production-only and requires visitor consent", async () => {
   assert.match(consent, /createPortal/);
   assert.match(consent, /guide-notice/);
   assert.match(consent, /Help improve the guide/);
-  const footer = await readFile(new URL("app/site-footer.tsx", root), "utf8");
+  const footer = await readFile(new URL("frontend/src/site-footer.tsx", root), "utf8");
   assert.match(footer, /openAnalyticsPreferences/);
   assert.match(footer, /Privacy choices/);
   assert.match(footer, /footer-skull\.webp/);
@@ -333,7 +333,7 @@ test("analytics is production-only and requires visitor consent", async () => {
 });
 
 test("reviewed launch catalog covers all six media types with provenance", async () => {
-  const releases = JSON.parse(await readFile(new URL("dreamhost/backend/data/curated-releases.json", root), "utf8"));
+  const releases = JSON.parse(await readFile(new URL("backend/data/curated-releases.json", root), "utf8"));
   assert.ok(releases.length >= 6);
   assert.deepEqual(
     [...new Set(releases.map(release => release.media_type))].sort(),
@@ -356,9 +356,9 @@ test("reviewed launch catalog covers all six media types with provenance", async
 });
 
 test("automated collectors are credential-gated and conservative", async () => {
-  const config = await readFile(new URL("dreamhost/backend/config.example.php", root), "utf8");
-  const importer = await readFile(new URL("dreamhost/backend/cron/ingest.php", root), "utf8");
-  const collectors = await readFile(new URL("dreamhost/backend/src/collectors.php", root), "utf8");
+  const config = await readFile(new URL("backend/config.example.php", root), "utf8");
+  const importer = await readFile(new URL("backend/cron/ingest.php", root), "utf8");
+  const collectors = await readFile(new URL("backend/src/collectors.php", root), "utf8");
   assert.match(config, /'igdb_client_secret' => ''/);
   assert.match(config, /'rawg_api_key' => ''/);
   assert.match(config, /'rawg_horror_tags' => \['horror'\]/);
@@ -378,8 +378,8 @@ test("automated collectors are credential-gated and conservative", async () => {
 });
 
 test("Asmodee USA discovers dated horror tabletop retail releases conservatively", async () => {
-  const config = await readFile(new URL("dreamhost/backend/config.example.php", root), "utf8");
-  const collectors = await readFile(new URL("dreamhost/backend/src/collectors.php", root), "utf8");
+  const config = await readFile(new URL("backend/config.example.php", root), "utf8");
+  const collectors = await readFile(new URL("backend/src/collectors.php", root), "utf8");
   const workflow = await readFile(new URL("docs/workflow-examples/ingest-production.yml", root), "utf8");
   assert.match(config, /'asmodee_enabled' => true/);
   assert.match(config, /store\.asmodee\.com\/pages\/release-calendar/);
@@ -395,10 +395,10 @@ test("Asmodee USA discovers dated horror tabletop retail releases conservatively
 });
 
 test("Lunar discovers public workbook dates and keeps only explicit horror comics", async () => {
-  const config = await readFile(new URL("dreamhost/backend/config.example.php", root), "utf8");
-  const collectors = await readFile(new URL("dreamhost/backend/src/collectors.php", root), "utf8");
+  const config = await readFile(new URL("backend/config.example.php", root), "utf8");
+  const collectors = await readFile(new URL("backend/src/collectors.php", root), "utf8");
   const workflow = await readFile(new URL("docs/workflow-examples/ingest-production.yml", root), "utf8");
-  const sources = await readFile(new URL("app/sources-page.tsx", root), "utf8");
+  const sources = await readFile(new URL("frontend/src/sources-page.tsx", root), "utf8");
   assert.match(config, /'lunar_enabled' => true/);
   assert.match(config, /'lunar_horror_terms'/);
   assert.match(config, /'lunar_excluded_terms'/);
@@ -420,7 +420,7 @@ test("Lunar discovers public workbook dates and keeps only explicit horror comic
 });
 
 test("RAWG discovery is horror-tagged, source-linked, and lower confidence", async () => {
-  const collectors = await readFile(new URL("dreamhost/backend/src/collectors.php", root), "utf8");
+  const collectors = await readFile(new URL("backend/src/collectors.php", root), "utf8");
   assert.match(collectors, /ghastly_collect_rawg/);
   assert.match(collectors, /ghastly_rawg_has_horror_tag/);
   assert.match(collectors, /https:\/\/rawg\.io\/games\//);
@@ -429,10 +429,10 @@ test("RAWG discovery is horror-tagged, source-linked, and lower confidence", asy
 });
 
 test("IGDB takes precedence over matching RAWG game records", async () => {
-  const releasesApi = await readFile(new URL("dreamhost/backend/public/api/releases.php", root), "utf8");
-  const seo = await readFile(new URL("dreamhost/backend/src/seo.php", root), "utf8");
-  const releasesClient = await readFile(new URL("app/releases.ts", root), "utf8");
-  const collectors = await readFile(new URL("dreamhost/backend/src/collectors.php", root), "utf8");
+  const releasesApi = await readFile(new URL("backend/public/api/releases.php", root), "utf8");
+  const seo = await readFile(new URL("backend/src/seo.php", root), "utf8");
+  const releasesClient = await readFile(new URL("frontend/src/releases.ts", root), "utf8");
+  const collectors = await readFile(new URL("backend/src/collectors.php", root), "utf8");
   const workflow = await readFile(new URL("docs/workflow-examples/ingest-production.yml", root), "utf8");
   assert.match(releasesApi, /\$igdbGames/);
   assert.match(releasesApi, /\$row\['source_name'\] === 'RAWG'/);
@@ -464,18 +464,18 @@ test("IGDB takes precedence over matching RAWG game records", async () => {
   assert.match(seo, /\$releaseDate->modify\('-7 days'\)/);
   assert.match(seo, /source_name = 'IGDB'/);
   assert.match(workflow, /SOURCE:-tmdb,igdb,rawg/);
-  const importer = await readFile(new URL("dreamhost/backend/cron/ingest.php", root), "utf8");
+  const importer = await readFile(new URL("backend/cron/ingest.php", root), "utf8");
   assert.match(importer, /'igdb' => 'IGDB'/);
   assert.match(importer, /last_seen_at < :run_started/);
 });
 
 test("post-release reception uses exact provider identities and preserves provenance", async () => {
-  const schema = await readFile(new URL("dreamhost/backend/schema.sql", root), "utf8");
-  const collectors = await readFile(new URL("dreamhost/backend/src/collectors.php", root), "utf8");
-  const importer = await readFile(new URL("dreamhost/backend/cron/ingest.php", root), "utf8");
-  const releasesApi = await readFile(new URL("dreamhost/backend/public/api/releases.php", root), "utf8");
-  const releaseCard = await readFile(new URL("app/release-card.tsx", root), "utf8");
-  const releaseDetail = await readFile(new URL("app/release-detail-page.tsx", root), "utf8");
+  const schema = await readFile(new URL("backend/schema.sql", root), "utf8");
+  const collectors = await readFile(new URL("backend/src/collectors.php", root), "utf8");
+  const importer = await readFile(new URL("backend/cron/ingest.php", root), "utf8");
+  const releasesApi = await readFile(new URL("backend/public/api/releases.php", root), "utf8");
+  const releaseCard = await readFile(new URL("frontend/src/release-card.tsx", root), "utf8");
+  const releaseDetail = await readFile(new URL("frontend/src/release-detail-page.tsx", root), "utf8");
   const workflow = await readFile(new URL("docs/workflow-examples/deploy-dreamhost.yml", root), "utf8");
   assert.match(schema, /PRIMARY KEY \(release_id, provider, external_id\)/);
   assert.match(schema, /PRIMARY KEY \(provider, external_id, rating_kind\)/);
@@ -495,8 +495,8 @@ test("post-release reception uses exact provider identities and preserves proven
 });
 
 test("IGDB supplements its Horror theme with controlled textual signals", async () => {
-  const config = await readFile(new URL("dreamhost/backend/config.example.php", root), "utf8");
-  const collectorsUrl = new URL("dreamhost/backend/src/collectors.php", root);
+  const config = await readFile(new URL("backend/config.example.php", root), "utf8");
+  const collectorsUrl = new URL("backend/src/collectors.php", root);
   const collectors = await readFile(collectorsUrl, "utf8");
   assert.match(config, /'igdb_horror_fallback_terms'/);
   for (const signal of ["body horror", "occult", "vampire", "werewolf", "witchcraft"]) {
@@ -532,9 +532,9 @@ test("IGDB supplements its Horror theme with controlled textual signals", async 
 });
 
 test("IGDB VR platforms produce a searchable VR tag", async () => {
-  const bootstrap = await readFile(new URL("dreamhost/backend/src/bootstrap.php", root), "utf8");
-  const collectors = await readFile(new URL("dreamhost/backend/src/collectors.php", root), "utf8");
-  const releasesApi = await readFile(new URL("dreamhost/backend/public/api/releases.php", root), "utf8");
+  const bootstrap = await readFile(new URL("backend/src/bootstrap.php", root), "utf8");
+  const collectors = await readFile(new URL("backend/src/collectors.php", root), "utf8");
+  const releasesApi = await readFile(new URL("backend/public/api/releases.php", root), "utf8");
   assert.match(bootstrap, /function ghastly_platform_is_vr/);
   for (const platform of ["steamvr", "playstation vr2", "meta quest 3", "oculus rift", "windows mixed reality"]) {
     assert.match(bootstrap, new RegExp(`'${platform}'`));
@@ -546,14 +546,14 @@ test("IGDB VR platforms produce a searchable VR tag", async () => {
 });
 
 test("movie filters separate theatrical and at-home releases", async () => {
-  const page = await readFile(new URL("app/page.tsx", root), "utf8");
-  const types = await readFile(new URL("app/types.ts", root), "utf8");
-  const card = await readFile(new URL("app/release-card.tsx", root), "utf8");
-  const detail = await readFile(new URL("app/release-detail-page.tsx", root), "utf8");
-  const css = await readFile(new URL("app/globals.css", root), "utf8");
-  const releasesApi = await readFile(new URL("dreamhost/backend/public/api/releases.php", root), "utf8");
-  const seo = await readFile(new URL("dreamhost/backend/src/seo.php", root), "utf8");
-  const feed = await readFile(new URL("dreamhost/backend/public/feed.php", root), "utf8");
+  const page = await readFile(new URL("frontend/src/page.tsx", root), "utf8");
+  const types = await readFile(new URL("frontend/src/types.ts", root), "utf8");
+  const card = await readFile(new URL("frontend/src/release-card.tsx", root), "utf8");
+  const detail = await readFile(new URL("frontend/src/release-detail-page.tsx", root), "utf8");
+  const css = await readFile(new URL("frontend/src/globals.css", root), "utf8");
+  const releasesApi = await readFile(new URL("backend/public/api/releases.php", root), "utf8");
+  const seo = await readFile(new URL("backend/src/seo.php", root), "utf8");
+  const feed = await readFile(new URL("backend/public/feed.php", root), "utf8");
   assert.match(types, /label: "In Theaters"/);
   assert.match(types, /label: "Movies at home"/);
   assert.match(types, /export function releaseTypeLabel/);
@@ -604,8 +604,8 @@ test("movie filters separate theatrical and at-home releases", async () => {
   assert.doesNotMatch(card, />Add to calendar</);
   assert.match(card, /canAddToCalendar\(release\)/);
   assert.match(card, /downloadReleaseCalendar\(release\)/);
-  const calendar = await readFile(new URL("app/calendar-event.ts", root), "utf8");
-  const releaseSource = await readFile(new URL("app/release-source.ts", root), "utf8");
+  const calendar = await readFile(new URL("frontend/src/calendar-event.ts", root), "utf8");
+  const releaseSource = await readFile(new URL("frontend/src/release-source.ts", root), "utf8");
   assert.match(calendar, /DTSTART;VALUE=DATE/);
   assert.match(calendar, /datePrecision === "day"/);
   assert.match(calendar, /export function savedCalendarIcs/);
@@ -632,13 +632,13 @@ test("movie filters separate theatrical and at-home releases", async () => {
 });
 
 test("official YouTube trailers are stored from TMDB videos and optional YouTube search", async () => {
-  const schema = await readFile(new URL("dreamhost/backend/schema.sql", root), "utf8");
-  const config = await readFile(new URL("dreamhost/backend/config.example.php", root), "utf8");
-  const collectors = await readFile(new URL("dreamhost/backend/src/collectors.php", root), "utf8");
-  const importer = await readFile(new URL("dreamhost/backend/cron/ingest.php", root), "utf8");
-  const bootstrap = await readFile(new URL("dreamhost/backend/src/bootstrap.php", root), "utf8");
-  const releasesApi = await readFile(new URL("dreamhost/backend/public/api/releases.php", root), "utf8");
-  const modal = await readFile(new URL("app/trailer-modal.tsx", root), "utf8");
+  const schema = await readFile(new URL("backend/schema.sql", root), "utf8");
+  const config = await readFile(new URL("backend/config.example.php", root), "utf8");
+  const collectors = await readFile(new URL("backend/src/collectors.php", root), "utf8");
+  const importer = await readFile(new URL("backend/cron/ingest.php", root), "utf8");
+  const bootstrap = await readFile(new URL("backend/src/bootstrap.php", root), "utf8");
+  const releasesApi = await readFile(new URL("backend/public/api/releases.php", root), "utf8");
+  const modal = await readFile(new URL("frontend/src/trailer-modal.tsx", root), "utf8");
   assert.match(schema, /trailer_url VARCHAR\(1000\) NULL/);
   assert.match(config, /'youtube_api_key' => ''/);
   assert.match(collectors, /ghastly_tmdb_youtube_trailer/);
@@ -648,7 +648,7 @@ test("official YouTube trailers are stored from TMDB videos and optional YouTube
   assert.match(collectors, /googleapis\.com\/youtube\/v3\/search/);
   assert.match(collectors, /official\\s\+trailer/);
   assert.match(importer, /:trailer_url/);
-  const migration = await readFile(new URL("dreamhost/backend/cron/migrate.php", root), "utf8");
+  const migration = await readFile(new URL("backend/cron/migrate.php", root), "utf8");
   assert.match(migration, /SHOW COLUMNS FROM releases LIKE 'trailer_url'/);
   assert.doesNotMatch(bootstrap, /SHOW COLUMNS|ALTER TABLE/);
   assert.match(releasesApi, /\$release\['trailer'\]/);
@@ -658,9 +658,9 @@ test("official YouTube trailers are stored from TMDB videos and optional YouTube
 });
 
 test("TMDB includes international horror with verified US availability", async () => {
-  const config = await readFile(new URL("dreamhost/backend/config.example.php", root), "utf8");
-  const importer = await readFile(new URL("dreamhost/backend/cron/ingest.php", root), "utf8");
-  const collectors = await readFile(new URL("dreamhost/backend/src/collectors.php", root), "utf8");
+  const config = await readFile(new URL("backend/config.example.php", root), "utf8");
+  const importer = await readFile(new URL("backend/cron/ingest.php", root), "utf8");
+  const collectors = await readFile(new URL("backend/src/collectors.php", root), "utf8");
   assert.match(config, /'tmdb_region' => 'US'/);
   assert.match(config, /'tmdb_movie_release_types' => \['3', '2', '4', '5', '6'\]/);
   assert.match(collectors, /ghastly_tmdb_month_windows/);
@@ -698,10 +698,10 @@ test("TMDB includes international horror with verified US availability", async (
 });
 
 test("PRH discovers horror books while Google Books stays retired", async () => {
-  const config = await readFile(new URL("dreamhost/backend/config.example.php", root), "utf8");
-  const collectors = await readFile(new URL("dreamhost/backend/src/collectors.php", root), "utf8");
-  const releasesApi = await readFile(new URL("dreamhost/backend/public/api/releases.php", root), "utf8");
-  const importer = await readFile(new URL("dreamhost/backend/cron/ingest.php", root), "utf8");
+  const config = await readFile(new URL("backend/config.example.php", root), "utf8");
+  const collectors = await readFile(new URL("backend/src/collectors.php", root), "utf8");
+  const releasesApi = await readFile(new URL("backend/public/api/releases.php", root), "utf8");
+  const importer = await readFile(new URL("backend/cron/ingest.php", root), "utf8");
   const workflow = await readFile(new URL("docs/workflow-examples/ingest-production.yml", root), "utf8");
   assert.match(config, /'google_books_enabled' => false/);
   assert.match(config, /'prh_domain' => 'PRH.US'/);
@@ -745,12 +745,12 @@ test("PRH discovers horror books while Google Books stays retired", async () => 
 });
 
 test("TVmaze discovers current horror season premieres without storing episodes", async () => {
-  const config = await readFile(new URL("dreamhost/backend/config.example.php", root), "utf8");
-  const collectors = await readFile(new URL("dreamhost/backend/src/collectors.php", root), "utf8");
-  const importer = await readFile(new URL("dreamhost/backend/cron/ingest.php", root), "utf8");
-  const releasesApi = await readFile(new URL("dreamhost/backend/public/api/releases.php", root), "utf8");
+  const config = await readFile(new URL("backend/config.example.php", root), "utf8");
+  const collectors = await readFile(new URL("backend/src/collectors.php", root), "utf8");
+  const importer = await readFile(new URL("backend/cron/ingest.php", root), "utf8");
+  const releasesApi = await readFile(new URL("backend/public/api/releases.php", root), "utf8");
   const workflow = await readFile(new URL("docs/workflow-examples/ingest-production.yml", root), "utf8");
-  const sources = await readFile(new URL("app/sources-page.tsx", root), "utf8");
+  const sources = await readFile(new URL("frontend/src/sources-page.tsx", root), "utf8");
   assert.match(config, /'tvmaze_enabled' => true/);
   assert.match(collectors, /function ghastly_collect_tvmaze/);
   assert.match(collectors, /function ghastly_tvmaze_is_season_premiere/);
@@ -773,7 +773,7 @@ test("TVmaze discovers current horror season premieres without storing episodes"
 });
 
 test("about page matches sources voice and keeps required credits", async () => {
-  const about = await readFile(new URL("app/about-page.tsx", root), "utf8");
+  const about = await readFile(new URL("frontend/src/about-page.tsx", root), "utf8");
   assert.doesNotMatch(about, /page-hero">.*without turning rumor into fact/);
   assert.match(about, /without turning rumor into fact/);
   assert.match(about, /One date\. Many forms\./);
@@ -783,7 +783,7 @@ test("about page matches sources voice and keeps required credits", async () => 
 });
 
 test("contact page matches sources voice and keeps the form", async () => {
-  const contact = await readFile(new URL("app/contact-page.tsx", root), "utf8");
+  const contact = await readFile(new URL("frontend/src/contact-page.tsx", root), "utf8");
   assert.doesNotMatch(contact, /page-hero">.*Found a missing release/);
   assert.match(contact, /Found a missing release/);
   assert.match(contact, /What helps most/);
@@ -793,6 +793,6 @@ test("contact page matches sources voice and keeps the form", async () => {
 });
 
 test("public ingest health does not expose provider errors", async () => {
-  const statusApi = await readFile(new URL("dreamhost/backend/public/api/ingest-status.php", root), "utf8");
+  const statusApi = await readFile(new URL("backend/public/api/ingest-status.php", root), "utf8");
   assert.doesNotMatch(statusApi, /runs\.error_message/);
 });

@@ -5,7 +5,7 @@ dreamhost-dist/
 .env
 .env.*
 !.env.example
-dreamhost/backend/config.php
+backend/config.php
 *.log
 .vite/
 

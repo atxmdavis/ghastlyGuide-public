@@ -1,54 +1,70 @@
 # Ghastly Guide
 
-Ghastly Guide is a source-aware release calendar for horror movies, shows, video games, tabletop games, comics, and books.
+A source-aware release calendar for horror movies, shows, video games, tabletop games, comics, and books. Built with React, TypeScript, Vite, PHP, and MySQL.
 
-## Sharing snapshot
+## About this repository
 
-This repository is a source snapshot for review. It starts with a single commit and does not include production deployment or scheduled ingestion workflows, server configuration, or credentials. Workflow examples live under `docs/workflow-examples/` and cannot run from that directory. It does not automatically update from the production repository. Deployment instructions describe the application architecture; deployment automation must be configured separately.
+This is a public source snapshot for review and sharing. It has no production credentials or active deployment workflows and does not automatically update from the production repository. The original application runs at [ghastlyguide.com](https://ghastlyguide.com).
 
-## Stack
+## Project structure
 
-- React + TypeScript + Vite frontend
-- PHP 8.3 API and scheduled collectors
-- MySQL on DreamHost Shared
-- GitHub Actions deployment to DreamHost
+```text
+frontend/
+  index.html          HTML entry point
+  main.tsx            React entry point and route selection
+  src/                Pages, components, styles, and browser data helpers
+backend/
+  public/             PHP web entry points and API endpoints
+  src/                Collectors, database access, and application services
+  cron/               Import and migration commands
+  data/               Reviewed release records and an example data contract
+  migrations/         Incremental SQL migrations
+  config.example.php  Configuration template; real config stays untracked
+  schema.sql          Base database schema
+public/               Static frontend assets copied by Vite
+scripts/              Build packaging
+tests/               Node and PHP tests, plus isolated fixtures
+docs/                Deployment guide, source notes, and inactive workflow examples
+```
+
+Root configuration files control Vite, TypeScript, ESLint, and npm. The frontend asset directory `public/` is separate from PHP web entry points in `backend/public/`; packaging combines both into the deployable public directory.
 
 ## Local development
 
+Requires Node.js 22.13 or newer. PHP 8.3 is used for backend tests; running a local backend also requires MySQL and provider configuration.
+
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
-`npm run dev` proxies `/api` to the live DreamHost catalog at `https://ghastlyguide.com`. To use a local PHP API instead:
+By default, `/api` requests proxy to the live catalog at `https://ghastlyguide.com`. The saved-transfer development endpoint uses a temporary in-memory store. Contact submissions use the configured API, so use a local backend when testing that form.
+
+To use your own API:
 
 ```sh
 GHASTLY_API_ORIGIN=http://127.0.0.1:8080 npm run dev
 ```
 
-## Validation and package
+See the [deployment guide](docs/DEPLOYMENT.md) for PHP, database, configuration, and hosting setup. A frontend preview does not require provider credentials.
+
+## Validation and packaging
 
 ```sh
 npm run lint
 npm test
 ```
 
-`npm test` builds and verifies `dreamhost-dist/public` and `dreamhost-dist/private`. Never commit or upload `dreamhost/backend/config.php`; use the server-only template described in [DREAMHOST.md](DREAMHOST.md).
+`npm test` runs typechecking, builds the frontend, packages the PHP application, and runs Node/PHP checks. It generates ignored output in `dist/` and `dreamhost-dist/`. Packaging keeps browser-accessible files in `dreamhost-dist/public/` and server-only files in the sibling `dreamhost-dist/private/`.
 
-The source and licensing plan is documented in [docs/SOURCE_RESEARCH.md](docs/SOURCE_RESEARCH.md).
+Never commit real configuration, API tokens, or SSH keys. `backend/config.example.php` is a template; `backend/config.php` and deployed `private/config.php` must remain private.
 
-Production analytics uses the optional `VITE_GA_MEASUREMENT_ID` build variable. The production HTML includes the Google tag with analytics storage denied until a visitor accepts; local development does not inject the tag. The deployment workflow reads the public measurement ID from the `GA_MEASUREMENT_ID` GitHub repository variable.
+## Data sources and ingestion
 
-## Release ingestion
+The importer supports `curated`, `tmdb`, `igdb`, `rawg`, `asmodee`, `lunar`, `prh`, and `tvmaze`, plus `ratings` and `availability` refresh jobs. Google Books discovery is retired. Reviewed records live in `backend/data/curated-releases.json`; collectors preserve source evidence, region, confidence, and date precision.
 
-The importer supports six isolated sources:
+Provider credentials belong in protected server configuration. A missing or disabled provider is recorded as skipped so other sources can complete. Building or testing does not run ingestion.
 
-- `curated` — reviewed official records committed in `dreamhost/backend/data/curated-releases.json`
-- `tmdb` — US-dated horror movies from any origin or original language, plus an explicitly configured TV horror keyword list
-- `igdb` — video-game dates by platform and region
-- `rawg` — horror-tagged video-game discovery with global catalog dates and required source backlinks
-- `asmodee` — official Asmodee USA calendar discovery for clearly horror-related tabletop retail releases; obvious accessories are excluded
-Google Books discovery is retired from ingestion; its collector is retained for reference.
-- `tvmaze` — currently scheduled horror season premieres from the public TVmaze API; weekly episodes are not stored
+See [source research and attribution notes](docs/SOURCE_RESEARCH.md). Workflow examples in [docs/workflow-examples/](docs/workflow-examples/) are reference files and cannot run from that directory.
 
-Provider credentials belong only in DreamHost's protected `private/config.php`. A missing or intentionally disabled provider is recorded as `skipped`, while another source can still complete successfully.
+Production analytics is optional through `VITE_GA_MEASUREMENT_ID` and requires visitor consent. The example deployment reads the public measurement ID from the `GA_MEASUREMENT_ID` repository variable.

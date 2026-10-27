@@ -105,7 +105,7 @@ function googleAnalyticsHtmlPlugin(): Plugin {
 }
 
 export default defineConfig({
-  root: path.resolve(import.meta.dirname, "dreamhost/frontend"),
+  root: path.resolve(import.meta.dirname, "frontend"),
   publicDir: path.resolve(import.meta.dirname, "public"),
   plugins: [react(), googleAnalyticsHtmlPlugin(), savedTransferDevPlugin()],
   server: {

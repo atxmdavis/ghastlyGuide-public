@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-require dirname(__DIR__) . '/dreamhost/backend/src/http.php';
+require dirname(__DIR__) . '/backend/src/http.php';
 
 $expected = [
     ['name' => 'Braces }{, brackets ][, quote " and slash \\', 'nested' => [['id' => 1], ['id' => 2]], 'unicode' => 'Hanté'],

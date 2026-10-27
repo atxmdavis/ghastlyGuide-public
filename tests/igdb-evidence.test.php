@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 putenv('GHASTLY_GUIDE_CONFIG=' . __DIR__ . '/fixtures/test-config.php');
-require dirname(__DIR__) . '/dreamhost/backend/src/collectors.php';
+require dirname(__DIR__) . '/backend/src/collectors.php';
 
 $assert = static function (bool $condition, string $message): void {
     if (!$condition) {

@@ -38,7 +38,7 @@ Collectors cache results in MySQL, identify the application, isolate failures, a
 
 ## Curated import contract
 
-Use `dreamhost/backend/data/curated-releases.example.json` as the field contract. Copy reviewed entries into `curated-releases.json`, retain the evidence URL, and run:
+Use `backend/data/curated-releases.example.json` as the field contract. Copy reviewed entries into `curated-releases.json`, retain the evidence URL, and run:
 
 ```sh
 php private/cron/ingest.php --source=curated

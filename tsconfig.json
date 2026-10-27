@@ -16,5 +16,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["app", "dreamhost/frontend", "vite.config.ts"]
+  "include": ["frontend", "vite.config.ts"]
 }

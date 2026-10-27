@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { compareReleases, highlightReleaseTags, platformValues, isVrRelease } from "../app/release-refinements.ts";
+import { compareReleases, highlightReleaseTags, platformValues, isVrRelease } from "../frontend/src/release-refinements.ts";
 
 const releases = [
   { id: "z", title: "Zulu", date: "2026-09-10", datePrecision: "day" },

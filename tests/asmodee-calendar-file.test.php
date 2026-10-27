@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 putenv('GHASTLY_GUIDE_CONFIG=' . __DIR__ . '/fixtures/test-config.php');
-require dirname(__DIR__) . '/dreamhost/backend/src/collectors.php';
+require dirname(__DIR__) . '/backend/src/collectors.php';
 
 $path = tempnam(sys_get_temp_dir(), 'ghastly-asmodee-test-');
 if ($path === false) throw new RuntimeException('Unable to create calendar fixture.');

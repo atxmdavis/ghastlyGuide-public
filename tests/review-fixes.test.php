@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
-require dirname(__DIR__) . '/dreamhost/backend/src/contact.php';
-require dirname(__DIR__) . '/dreamhost/backend/src/saved-transfer.php';
-require dirname(__DIR__) . '/dreamhost/backend/src/rate-limit.php';
+require dirname(__DIR__) . '/backend/src/contact.php';
+require dirname(__DIR__) . '/backend/src/saved-transfer.php';
+require dirname(__DIR__) . '/backend/src/rate-limit.php';
 
 function check(bool $condition, string $message): void {
     if (!$condition) throw new RuntimeException($message);

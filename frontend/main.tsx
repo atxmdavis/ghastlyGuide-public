@@ -1,12 +1,12 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import AboutPage from "../../app/about-page";
-import AnalyticsConsent from "../../app/analytics-consent";
-import ContactPage from "../../app/contact-page";
-import "../../app/globals.css";
-import Home from "../../app/page";
-import ReleaseDetailPage from "../../app/release-detail-page";
-import SourcesPage from "../../app/sources-page";
+import AboutPage from "./src/about-page";
+import AnalyticsConsent from "./src/analytics-consent";
+import ContactPage from "./src/contact-page";
+import "./src/globals.css";
+import Home from "./src/page";
+import ReleaseDetailPage from "./src/release-detail-page";
+import SourcesPage from "./src/sources-page";
 
 const path = window.location.pathname.replace(/\/+$/, "") || "/";
 const releaseMatch = path.match(/^\/releases\/(\d+)(?:\/[^/]*)?$/);

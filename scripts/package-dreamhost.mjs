@@ -6,7 +6,7 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 const outputRoot = path.join(projectRoot, "dreamhost-dist");
 const publicOutput = path.join(outputRoot, "public");
 const privateOutput = path.join(outputRoot, "private");
-const backendRoot = path.join(projectRoot, "dreamhost", "backend");
+const backendRoot = path.join(projectRoot, "backend");
 
 await rm(outputRoot, { recursive: true, force: true });
 await mkdir(publicOutput, { recursive: true });

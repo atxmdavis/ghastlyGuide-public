@@ -13,7 +13,7 @@ async function moduleUrl(path) {
   source = source.replaceAll("import.meta.env", JSON.stringify({ PROD: true, VITE_GA_MEASUREMENT_ID: "G-QATEST" }));
   return `data:text/javascript;base64,${Buffer.from(ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText).toString("base64")}`;
 }
-const saved = await import(await moduleUrl("../app/saved.ts"));
+const saved = await import(await moduleUrl("../frontend/src/saved.ts"));
 const release = {
   id: "valid", title: "Valid title", date: "2026-09-10", datePrecision: "day", mediaType: "book",
   source: "https://example.com/release", sourceName: "Publisher", confidence: "official",
@@ -71,7 +71,7 @@ test("storage access, invalid JSON, and quota failures are recoverable and do no
 });
 
 test("incoming transfers reject malformed records before changing the local saved list", async () => {
-  const transfer = await import(await moduleUrl("../app/saved-transfer.ts"));
+  const transfer = await import(await moduleUrl("../frontend/src/saved-transfer.ts"));
   const originalFetch = globalThis.fetch;
   try {
     globalThis.fetch = async () => ({ ok: true, json: async () => ({ saves: { valid: release, bad: null } }) });
@@ -87,7 +87,7 @@ test("accept, revoke, and reaccept update collection and delete only analytics c
   globalThis.window = { location: { hostname: "ghastlyguide.com" }, gtag: (...args) => calls.push(args) };
   globalThis.document = { get cookie() { return "_ga=abc; _ga_QATEST=session; functional=keep"; }, set cookie(value) { deletions.push(value); } };
   try {
-    const analytics = await import(await moduleUrl("../app/analytics.ts"));
+    const analytics = await import(await moduleUrl("../frontend/src/analytics.ts"));
     analytics.initializeAnalytics();
     analytics.initializeAnalytics();
     assert.equal(calls.filter(args => args[0] === "config").length, 1);
@@ -138,7 +138,7 @@ test("concurrent saved changes reread storage under a shared lock and preserve o
 });
 
 test("saved refresh batches IDs and retains API error information", async () => {
-  const releases = await import(await moduleUrl("../app/releases.ts"));
+  const releases = await import(await moduleUrl("../frontend/src/releases.ts"));
   const previousFetch = globalThis.fetch;
   const calls = [];
   globalThis.fetch = async (url, options) => { calls.push({ url: String(url), options }); return { ok: true, json: async () => ({ releases: [release] }) }; };
@@ -157,7 +157,7 @@ test("saved refresh batches IDs and retains API error information", async () => 
 });
 
 test("browse parameters preserve filters and reject unsupported sort and result counts", async () => {
-  const browse = await import(await moduleUrl("../app/browse-state.ts"));
+  const browse = await import(await moduleUrl("../frontend/src/browse-state.ts"));
   const state = browse.readBrowseState("?q=Haunt&allDates=1&filters=video_game,invalid&sort=title&platform=PC&vr=1&shown=120");
   assert.deepEqual(state.filters, ["video_game"]);
   assert.equal(state.sort, "title");

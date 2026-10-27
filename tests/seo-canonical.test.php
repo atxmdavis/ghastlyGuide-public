@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/dreamhost/backend/src/seo.php';
+require dirname(__DIR__) . '/backend/src/seo.php';
 
 $rows = [
     [

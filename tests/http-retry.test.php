@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-require dirname(__DIR__) . '/dreamhost/backend/src/http.php';
+require dirname(__DIR__) . '/backend/src/http.php';
 
 $now = 1791223200;
 $cases = [

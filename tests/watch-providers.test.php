@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/dreamhost/backend/src/watch-providers.php';
+require dirname(__DIR__) . '/backend/src/watch-providers.php';
 function ghastly_text(mixed $value, int $limit = 255): string { return substr(trim(strip_tags((string) $value)), 0, $limit); }
 function ghastly_config(): array { return ['tmdb_bearer_token' => 'fixture']; }
 function ghastly_http_json(string $url, array $headers): array {

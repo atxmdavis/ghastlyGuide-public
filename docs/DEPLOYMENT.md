@@ -1,6 +1,6 @@
 # DreamHost production setup
 
-This sharing snapshot includes inert workflow examples in `docs/workflow-examples/`. They describe the original deployment and do not run in this repository. Configure your own automation and credentials for a separate installation.
+This sharing snapshot includes inert workflow examples in `workflow-examples/`. They describe the original deployment and do not run in this repository. Configure your own automation and credentials for a separate installation.
 
 Ghastly Guide deploys a static React frontend plus PHP API/importer to DreamHost Shared. MySQL and upstream API credentials remain in a server-only file.
 
@@ -31,7 +31,8 @@ Keep these values in `private/config.php`; never add that file to Git:
 - Reception: TMDB vote averages are stored with their vote counts during TMDB ingestion. IGDB supplies exact Steam app IDs; the `ratings` source refreshes eligible Steam user-review aggregates for releases from the past year. Scores are current and do not represent a historical release-day snapshot.
 - RAWG: set `rawg_api_key` and keep `rawg_horror_tags` as `['horror']`. RAWG is supplemental discovery behind IGDB: its dates are not region-specific, and every published RAWG record links back to RAWG as required by the free personal-use plan.
 - Asmodee USA: `asmodee_enabled` defaults to true and reads the official U.S. release calendar. Keep the horror and accessory term lists narrow; the collector publishes only exact calendar dates and rejects obvious accessories such as token packs, miniatures, and playmats.
-- Google Books: set `google_books_api_key` to enable horror and imprint discovery. Records stay at database confidence and never override an official or PRH title.
+- Google Books discovery is retired and is not an accepted importer source. Its collector remains in the source for reference.
+- Lunar: `lunar_enabled` controls horror-comic discovery from public Lunar Distribution workbooks. Keep the horror and exclusion terms narrow.
 - Penguin Random House: set `prh_api_key` from the [PRH developer portal](https://developer.penguinrandomhouse.com/). Filter horror by `prh_cat_uris`, then keep product-page URLs as the evidence link.
 - TVmaze: `tvmaze_enabled` defaults to true. No API key. The collector reads the public full schedule, keeps Horror-tagged season premieres with current episode dates, and links each record back to TVmaze.
 
@@ -42,13 +43,13 @@ php /home/your-user/ghastlyguide/private/cron/ingest.php --source=tmdb
 php /home/your-user/ghastlyguide/private/cron/ingest.php --source=igdb
 php /home/your-user/ghastlyguide/private/cron/ingest.php --source=rawg
 php /home/your-user/ghastlyguide/private/cron/ingest.php --source=asmodee
-php /home/your-user/ghastlyguide/private/cron/ingest.php --source=google-books
+php /home/your-user/ghastlyguide/private/cron/ingest.php --source=lunar
 php /home/your-user/ghastlyguide/private/cron/ingest.php --source=prh
 php /home/your-user/ghastlyguide/private/cron/ingest.php --source=tvmaze
 php /home/your-user/ghastlyguide/private/cron/ingest.php --source=ratings
 ```
 
-Production TMDB, IGDB, RAWG, Asmodee USA, PRH, Google Books, and TVmaze ingestion is scheduled daily at `09:17 UTC` by `docs/workflow-examples/ingest-production.yml`. After a complete, non-empty TMDB or IGDB collection, records inside the managed date window that were not seen in that run are deactivated; failed or empty collections never trigger cleanup. IGDB remains the primary video-game provider; matching RAWG records are suppressed from the public API. Google Books records are suppressed when a publisher or PRH title already covers the same book. TVmaze season premieres are suppressed when TMDB or an official record already covers the same show. The same workflow can be started manually for any configured source. Asmodee’s calendar is downloaded on the GitHub runner and transferred into protected storage for the existing CLI parser, because the storefront rate-limits DreamHost requests. The temporary file is removed after the import; failed downloads leave existing records intact. Do not also install the example DreamHost cron below unless the GitHub schedule is disabled, or every provider will be imported twice.
+The inactive `workflow-examples/ingest-production.yml` example defines daily TMDB, IGDB, RAWG, Asmodee USA, Lunar, PRH, TVmaze, ratings, and availability jobs at `09:17 UTC`. Copying and configuring that example as an active GitHub workflow enables its schedule. After a complete, non-empty TMDB or IGDB collection, records inside the managed date window that were not seen in that run are deactivated; failed or empty collections never trigger cleanup. IGDB remains the primary video-game provider; matching RAWG records are suppressed from the public API. Google Books records are suppressed when a publisher or PRH title already covers the same book. TVmaze season premieres are suppressed when TMDB or an official record already covers the same show. The same workflow can be started manually for any configured source. Asmodee’s calendar is downloaded on the GitHub runner and transferred into protected storage for the existing CLI parser, because the storefront rate-limits DreamHost requests. The temporary file is removed after the import; failed downloads leave existing records intact. Do not also install the example DreamHost cron below unless the GitHub schedule is disabled, or every provider will be imported twice.
 
 Alternative DreamHost schedule:
 

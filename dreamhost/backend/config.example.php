@@ -1,0 +1,78 @@
+<?php
+
+return [
+    'db_host' => 'mysql.example.com',
+    'db_name' => 'ghastly_guide',
+    'db_user' => 'ghastly_guide',
+    'db_password' => 'replace-with-a-long-random-password',
+    'user_agent' => 'GhastlyGuide/0.1 (+https://ghastlyguide.com/about)',
+    'tmdb_bearer_token' => '',
+    'tmdb_region' => 'US',
+    'tmdb_movie_release_types' => ['3', '2', '4', '5', '6'],
+    'tmdb_tv_horror_keyword_ids' => ['315058', '250593', '256183', '15032', '12339', '287274'],
+    'youtube_api_key' => '',
+    'youtube_trailer_lookups_per_run' => 40,
+    'igdb_client_id' => '',
+    'igdb_client_secret' => '',
+    'igdb_horror_theme_id' => 19,
+    'igdb_horror_fallback_terms' => [
+        'body horror', 'cosmic horror', 'demon', 'demonic', 'eldritch',
+        'exorcism', 'ghost', 'haunted', 'haunting', 'lycanthrope', 'occult',
+        'possession', 'psychological horror', 'serial killer', 'survival horror',
+        'undead', 'vampire', 'vampirism', 'werewolf', 'witchcraft', 'zombie',
+    ],
+    'igdb_horror_standalone_terms' => [
+        'body horror', 'cosmic horror', 'psychological horror',
+        'serial killer', 'survival horror',
+    ],
+    'igdb_horror_ignore_phrases' => [
+        'zombie costume', 'zombie outfit', 'zombie skin', 'halloween costume',
+        'horror costume', 'ghost costume', 'vampire costume', 'werewolf costume',
+    ],
+    'rawg_api_key' => '',
+    'rawg_horror_tags' => ['horror'],
+    'asmodee_enabled' => true,
+    'asmodee_release_calendar_url' => 'https://store.asmodee.com/pages/release-calendar',
+    'asmodee_horror_terms' => [
+        'horror', 'zombie', 'zombicide', 'cthulhu', 'lovecraft', 'vampire',
+        'werewolf', 'undead', 'haunted', 'ghost', 'nightmare', 'demon',
+        'final girl', 'dead of winter', 'nemesis', 'dceased',
+        'mansions of madness', 'eldritch horror', 'elder sign', 'unfathomable',
+    ],
+    'asmodee_accessory_terms' => [
+        'acrylic token', 'token pack', 'miniature', 'playmat', 'dice tray',
+        'terrain pack', 'terrain expansion', 'spacecats', 'card sleeves',
+    ],
+    'lunar_enabled' => true,
+    'lunar_home_url' => 'https://www.lunardistribution.com/',
+    'lunar_horror_terms' => [
+        'horror', 'body horror', 'cosmic horror', 'folk horror', 'gothic horror',
+        'slasher', 'haunted', 'ghost story', 'supernatural horror',
+        'vampire', 'vampires', 'zombie', 'zombies', 'undead', 'occult',
+        'cthulhu', 'lovecraft', 'demonic', 'demon possession', 'werewolf',
+        'werewolves', 'creature feature', 'serial killer',
+    ],
+    'lunar_excluded_terms' => [
+        'light novel', 'prose novel', 'ttrpg', 'roleplaying game', 'role-playing game',
+        'art book', 'coloring book', 'picture book', 'poster', 'statue', 'figure', 'plush',
+        'bundle of', 'bundles of', 'reader pack', 'unlock bundle',
+    ],
+    'google_books_enabled' => false,
+    'google_books_api_key' => '',
+    'google_books_queries' => [
+        'subject:horror',
+        'inpublisher:"Tor Nightfire"',
+        'inpublisher:"Cemetery Dance"',
+        'inpublisher:DAW subject:horror',
+        'inpublisher:"Titan Books" subject:horror',
+        'inpublisher:"Saga Press" subject:horror',
+        'inpublisher:"Del Rey" subject:horror',
+    ],
+    'google_books_region' => 'US',
+    'prh_api_key' => '',
+    'prh_domain' => 'PRH.US',
+    // PRH consumer category URIs (the slugs under penguinrandomhouse.com/books/).
+    // '/gothic-horror' is the horror shelf. Graphic novels in these results are stored as comics.
+    'prh_cat_uris' => ['/gothic-horror'],
+    'tvmaze_enabled' => true,
+];

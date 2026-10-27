@@ -1,0 +1,20 @@
+[
+  {
+    "external_id": "publisher-item-id",
+    "title": "Verified release title",
+    "creator": "Creator or studio",
+    "media_type": "book",
+    "release_date": "2027-01-12",
+    "date_precision": "day",
+    "publisher": "Publisher",
+    "platform": "Hardcover",
+    "region": "US",
+    "horror_tags": ["Horror"],
+    "synopsis": "Short, source-supported description.",
+    "source_url": "https://publisher.example/title",
+    "source_name": "Official publisher",
+    "confidence": "official",
+    "source_rank": 100,
+    "artwork_url": null
+  }
+]

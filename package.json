@@ -1,0 +1,37 @@
+{
+  "name": "ghastly-guide",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "vite --config vite.config.ts",
+    "build": "vite build --config vite.config.ts",
+    "build:dreamhost": "npm run build && node scripts/package-dreamhost.mjs",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern dreamhost-dist",
+    "test": "npm run typecheck && npm run build:dreamhost && php tests/igdb-evidence.test.php && php tests/seo-canonical.test.php && php tests/review-fixes.test.php && php tests/tvmaze-memory.test.php && php tests/http-retry.test.php && php tests/asmodee-calendar-file.test.php && php tests/watch-providers.test.php && node --test tests/*.test.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.4",
+    "@types/node": "22.19.19",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "eslint": "9.39.4",
+    "eslint-plugin-react-hooks": "7.0.1",
+    "eslint-plugin-react-refresh": "0.4.24",
+    "globals": "16.5.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.53.0",
+    "vite": "^8.2.2"
+  }
+}

@@ -1,0 +1,20 @@
+# Ghastly Guide
+
+Ghastly Guide is a sourced release calendar for horror movies, television, video games, tabletop games, comics, and books.
+
+- Calendar: https://ghastlyguide.com/
+- Movies: https://ghastlyguide.com/movies
+- Shows: https://ghastlyguide.com/shows
+- Video games: https://ghastlyguide.com/games
+- Tabletop games: https://ghastlyguide.com/tabletop
+- Comics: https://ghastlyguide.com/comics
+- Books: https://ghastlyguide.com/books
+- Source policy: https://ghastlyguide.com/sources
+- About and corrections policy: https://ghastlyguide.com/about
+- Contact and release suggestions: https://ghastlyguide.com/contact
+- RSS: https://ghastlyguide.com/feed.xml
+- Sitemap: https://ghastlyguide.com/sitemap.xml
+
+Calendar month pages use `/calendar/YYYY/MM`. Individual release pages use `/releases/ID/title-slug` and provide the release date, medium, creator or publisher, platform or format, region, source confidence, last verification date, and public evidence link when available.
+
+Dates retain their announced precision: a year-only or month-only date is not presented as an exact day. Official sources outrank licensed partners, reference databases, and editorial verification when records conflict.

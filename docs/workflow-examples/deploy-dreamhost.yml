@@ -1,0 +1,57 @@
+name: Deploy Ghastly Guide to DreamHost
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ghastly-guide-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Production
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - name: Lint PHP
+        run: find dreamhost/backend -name '*.php' -print0 | xargs -0 -n1 php -l
+      - run: npm test
+        env:
+          VITE_GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
+      - name: Prepare SSH
+        env:
+          SSH_KEY_B64: ${{ secrets.DREAMHOST_SSH_KEY_B64 }}
+          DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s' "$SSH_KEY_B64" | base64 --decode > ~/.ssh/ghastly_guide
+          chmod 600 ~/.ssh/ghastly_guide
+          ssh-keyscan -H "$DREAMHOST_HOST" >> ~/.ssh/known_hosts
+      - name: Upload private application files
+        env:
+          DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
+          DREAMHOST_USER: ${{ secrets.DREAMHOST_USER }}
+          DREAMHOST_PRIVATE_PATH: ${{ secrets.DREAMHOST_PRIVATE_PATH }}
+        run: rsync -az -e 'ssh -i ~/.ssh/ghastly_guide -o IdentitiesOnly=yes' --exclude config.php dreamhost-dist/private/ "$DREAMHOST_USER@$DREAMHOST_HOST:$DREAMHOST_PRIVATE_PATH"
+      - name: Apply database migrations
+        env:
+          DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
+          DREAMHOST_USER: ${{ secrets.DREAMHOST_USER }}
+          DREAMHOST_PRIVATE_PATH: ${{ secrets.DREAMHOST_PRIVATE_PATH }}
+        run: ssh -i ~/.ssh/ghastly_guide -o IdentitiesOnly=yes "$DREAMHOST_USER@$DREAMHOST_HOST" "php ${DREAMHOST_PRIVATE_PATH%/}/cron/migrate.php"
+      - name: Upload public site
+        env:
+          DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
+          DREAMHOST_USER: ${{ secrets.DREAMHOST_USER }}
+          DREAMHOST_PUBLIC_PATH: ${{ secrets.DREAMHOST_PUBLIC_PATH }}
+        run: rsync -az --delete -e 'ssh -i ~/.ssh/ghastly_guide -o IdentitiesOnly=yes' dreamhost-dist/public/ "$DREAMHOST_USER@$DREAMHOST_HOST:$DREAMHOST_PUBLIC_PATH"

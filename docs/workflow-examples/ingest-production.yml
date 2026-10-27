@@ -1,0 +1,81 @@
+name: Ingest Ghastly Guide production releases
+
+on:
+  schedule:
+    - cron: "17 9 * * *"
+  workflow_dispatch:
+    inputs:
+      source:
+        description: Release source to ingest
+        required: true
+        default: tmdb
+        type: choice
+        options:
+          - tmdb
+          - curated
+          - igdb
+          - rawg
+          - asmodee
+          - lunar
+          - prh
+          - tvmaze
+          - ratings
+          - availability
+
+concurrency:
+  group: ghastly-guide-production-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    environment: Production
+    permissions:
+      contents: read
+    steps:
+      - name: Prepare SSH
+        env:
+          SSH_KEY_B64: ${{ secrets.DREAMHOST_SSH_KEY_B64 }}
+          DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s' "$SSH_KEY_B64" | base64 --decode > ~/.ssh/ghastly_guide
+          chmod 600 ~/.ssh/ghastly_guide
+          ssh-keyscan -H "$DREAMHOST_HOST" >> ~/.ssh/known_hosts
+      - name: Run selected importer
+        env:
+          DREAMHOST_HOST: ${{ secrets.DREAMHOST_HOST }}
+          DREAMHOST_USER: ${{ secrets.DREAMHOST_USER }}
+          DREAMHOST_PRIVATE_PATH: ${{ secrets.DREAMHOST_PRIVATE_PATH }}
+          SOURCE: ${{ inputs.source }}
+        run: |
+          sources="${SOURCE:-tmdb,igdb,rawg,asmodee,lunar,prh,tvmaze,ratings,availability}"
+          IFS=',' read -ra selected_sources <<< "$sources"
+          failed=0
+          umask 077
+          for selected_source in "${selected_sources[@]}"; do
+            remote_command="php ${DREAMHOST_PRIVATE_PATH%/}/cron/ingest.php --source=$selected_source"
+            if [[ "$selected_source" == "asmodee" ]]; then
+              local_calendar="$RUNNER_TEMP/asmodee-calendar-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT.html"
+              remote_calendar="${DREAMHOST_PRIVATE_PATH%/}/data/asmodee-calendar-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT.html"
+              printf -v quoted_calendar '%q' "$remote_calendar"
+              if ! curl --fail --location --compressed --retry 2 --retry-delay 15 --retry-max-time 180 --max-time 60 --max-filesize 8388608 --user-agent 'GhastlyGuide/0.1 (+https://ghastlyguide.com/about)' --output "$local_calendar" https://store.asmodee.com/pages/release-calendar \
+                || ! scp -i ~/.ssh/ghastly_guide -o IdentitiesOnly=yes "$local_calendar" "$DREAMHOST_USER@$DREAMHOST_HOST:$remote_calendar"; then
+                echo "::error::Asmodee calendar download or transfer failed; continuing with remaining sources."
+                ssh -i ~/.ssh/ghastly_guide -o IdentitiesOnly=yes "$DREAMHOST_USER@$DREAMHOST_HOST" "rm -f -- $quoted_calendar" || echo "::warning::Temporary Asmodee calendar cleanup failed."
+                rm -f -- "$local_calendar"
+                failed=1
+                continue
+              fi
+              remote_command="GHASTLY_ASMODEE_CALENDAR_FILE=$quoted_calendar $remote_command"
+            fi
+            if ! ssh -i ~/.ssh/ghastly_guide -o IdentitiesOnly=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=240 "$DREAMHOST_USER@$DREAMHOST_HOST" "$remote_command"; then
+              echo "::error::Ingest failed for $selected_source; continuing with remaining sources."
+              failed=1
+            fi
+            if [[ "$selected_source" == "asmodee" ]]; then
+              ssh -i ~/.ssh/ghastly_guide -o IdentitiesOnly=yes "$DREAMHOST_USER@$DREAMHOST_HOST" "rm -f -- $quoted_calendar" || echo "::warning::Temporary Asmodee calendar cleanup failed."
+              rm -f -- "$local_calendar"
+            fi
+          done
+          exit "$failed"

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="76%" cy="38%" r="42%"><stop offset="0" stop-color="#580f14" stop-opacity=".55"/><stop offset="1" stop-color="#12100e" stop-opacity="0"/></radialGradient>
+    <filter id="grain"><feTurbulence baseFrequency=".7" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .06"/></feComponentTransfer></filter>
+  </defs>
+  <rect width="1200" height="630" fill="#12100e"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="28" y="28" width="1144" height="574" rx="8" fill="none" stroke="#b08a3e" stroke-opacity=".6"/>
+  <rect x="40" y="40" width="1120" height="550" rx="5" fill="none" stroke="#b08a3e" stroke-opacity=".22"/>
+  <g fill="#b08a3e"><circle cx="600" cy="54" r="5"/><path d="M480 54h100m40 0h100" stroke="#b08a3e" stroke-opacity=".7"/></g>
+  <text x="76" y="118" fill="#b08a3e" font-family="Sora, Arial, sans-serif" font-size="24" font-weight="600" letter-spacing="5">UPCOMING HORROR ACROSS EVERY MEDIUM</text>
+  <text x="70" y="250" fill="#e5d8b5" font-family="Georgia, serif" font-size="104">Find What</text>
+  <text x="70" y="370" fill="#a12620" font-family="Georgia, serif" font-size="118">Haunts You</text>
+  <text x="70" y="490" fill="#e5d8b5" font-family="Georgia, serif" font-size="104">Next.</text>
+  <text x="76" y="550" fill="#b9ad93" font-family="Sora, Arial, sans-serif" font-size="22">MOVIES · SHOWS · GAMES · COMICS · BOOKS · TABLETOP</text>
+  <circle cx="1000" cy="303" r="110" fill="none" stroke="#b08a3e" stroke-opacity=".28"/>
+  <path d="M1000 205c-50 35-71 79-57 132 9 36 34 64 57 82 23-18 48-46 57-82 14-53-7-97-57-132Zm0 60c24 0 44 18 44 40s-20 40-44 40-44-18-44-40 20-40 44-40Z" fill="#b08a3e" fill-opacity=".35"/>
+  <path d="M1000 276c17 0 31 13 31 29s-14 29-31 29-31-13-31-29 14-29 31-29Z" fill="#12100e"/>
+  <circle cx="1000" cy="305" r="10" fill="#a12620"/>
+  <rect width="1200" height="630" filter="url(#grain)" opacity=".7"/>
+</svg>

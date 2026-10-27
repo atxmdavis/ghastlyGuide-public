@@ -1,0 +1,27 @@
+node_modules/
+dist/
+dreamhost-dist/
+.DS_Store
+.env
+.env.*
+!.env.example
+dreamhost/backend/config.php
+*.log
+.vite/
+
+# Server-only configuration, credentials, and local exports
+private/
+**/config.php
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+*.sql.gz
+*.sql.zip
+*.sqlite
+*.sqlite3
+*.db
+*.bak
+*.backup
